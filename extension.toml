@@ -1,0 +1,11 @@
+id = "fortran"
+name = "Fortran"
+version = "0.1.0"
+schema_version = 1
+authors = ["han190 <limpid.mazarine@gmail.com>"]
+description = "Fortran syntax highlighting for Zed"
+repository = "https://github.com/han190/zed-fortran"
+
+[grammars.fortran]
+repository = "https://github.com/stadelmanma/tree-sitter-fortran"
+commit = "2bc0220f34ca660ec9571c54ea57ed5363338de1"
