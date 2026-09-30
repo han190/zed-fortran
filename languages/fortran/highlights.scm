@@ -343,6 +343,10 @@
 (parameters
   (identifier) @variable.parameter)
 
+; The RESULT variable is the named result argument of a function.
+(function_result
+  (identifier) @variable.parameter)
+
 (program_statement
   (name) @title)
 
