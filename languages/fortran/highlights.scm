@@ -252,6 +252,15 @@
   (user_defined_operator)
 ] @operator
 
+; A signed literal is parsed as a unary expression, rather than as a single
+; number_literal. Highlight both parts as one numeric entity.
+(unary_expression
+  operator: [
+    "-"
+    "+"
+  ] @number
+  argument: (number_literal) @number)
+
 [
   "("
   "(/"
@@ -279,6 +288,49 @@
 ; Names
 
 (identifier) @variable
+
+(number_literal
+  kind: (identifier) @number)
+
+; ISO_C_BINDING named constants. This includes GNU Fortran's documented
+; integer-128 and unsigned-integer extensions:
+; https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fC_005fBINDING.html
+(
+  (identifier) @constant.builtin
+  (#match? @constant.builtin "(?i)^(c_int|c_short|c_long|c_long_long|c_signed_char|c_size_t|c_int8_t|c_int16_t|c_int32_t|c_int64_t|c_int128_t|c_int_least8_t|c_int_least16_t|c_int_least32_t|c_int_least64_t|c_int_least128_t|c_int_fast8_t|c_int_fast16_t|c_int_fast32_t|c_int_fast64_t|c_int_fast128_t|c_intmax_t|c_intptr_t|c_ptrdiff_t)$")
+)
+
+(
+  (identifier) @constant.builtin
+  (#match? @constant.builtin "(?i)^(c_float|c_double|c_long_double|c_float128|c_float_complex|c_double_complex|c_long_double_complex|c_float128_complex|c_bool|c_char)$")
+)
+
+(
+  (identifier) @constant.builtin
+  (#match? @constant.builtin "(?i)^(c_unsigned|c_unsigned_short|c_unsigned_char|c_unsigned_long|c_unsigned_long_long|c_uintmax_t|c_uint8_t|c_uint16_t|c_uint32_t|c_uint64_t|c_uint128_t|c_uint_fast8_t|c_uint_fast16_t|c_uint_fast32_t|c_uint_fast64_t|c_uint_fast128_t|c_uint_least8_t|c_uint_least16_t|c_uint_least32_t|c_uint_least64_t|c_uint_least128_t)$")
+)
+
+(
+  (identifier) @constant.builtin
+  (#match? @constant.builtin "(?i)^(c_null_char|c_alert|c_backspace|c_form_feed|c_new_line|c_carriage_return|c_horizontal_tab|c_vertical_tab|c_null_ptr|c_null_funptr)$")
+)
+
+; ISO_FORTRAN_ENV named constants. GNU Fortran's documentation spells the
+; initial-team constant "INTIAL_TEAM"; the standard identifier is INITIAL_TEAM.
+; https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORTRAN_005fENV.html
+(
+  (identifier) @constant.builtin
+  (#match? @constant.builtin "(?i)^(atomic_int_kind|atomic_logical_kind|character_kinds|character_storage_size|current_team|error_unit|file_storage_size|initial_team|input_unit|int8|int16|int32|int64|integer_kinds|iostat_end|iostat_eor|iostat_inquire_internal_unit|numeric_storage_size|logical_kinds|output_unit|parent_team)$")
+)
+
+(
+  (identifier) @constant.builtin
+  (#match? @constant.builtin "(?i)^(real32|real64|real128|real_kinds|stat_locked|stat_locked_other_image|stat_stopped_image|stat_failed_image|stat_unlocked|uint8|uint16|uint32|uint64)$")
+)
+
+; A kind selector is an identifier in the grammar, but is part of the literal.
+; Keep it numeric even when its name is also an ISO_FORTRAN_ENV constant.
+(number_literal) @number
 
 (number_literal
   kind: (identifier) @number)
@@ -354,6 +406,32 @@
   (#match? @function "(?i)^(backtrace|bessel_j0|bessel_j1|bessel_jn|bessel_y0|bessel_y1|bessel_yn|bge|bgt|bit_size|ble|blt|btest)$")
 )
 
+; ISO_C_BINDING intrinsic procedures documented by GNU Fortran:
+; https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fC_005fBINDING.html
+(
+  [
+    (call_expression
+      (identifier) @function.builtin
+      (argument_list))
+    (subroutine_call
+      subroutine: (identifier) @function.builtin)
+  ]
+  (#match? @function.builtin "(?i)^(c_associated|c_f_pointer|c_f_procpointer|c_funloc|c_loc|c_sizeof)$")
+)
+
+; ISO_FORTRAN_ENV intrinsic procedures documented by GNU Fortran:
+; https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORTRAN_005fENV.html
+(
+  [
+    (call_expression
+      (identifier) @function.builtin
+      (argument_list))
+    (subroutine_call
+      subroutine: (identifier) @function.builtin)
+  ]
+  (#match? @function.builtin "(?i)^(compiler_options|compiler_version)$")
+)
+
 (
   [
     (call_expression
@@ -362,7 +440,7 @@
     (subroutine_call
       subroutine: (identifier) @function)
   ]
-  (#match? @function "(?i)^(c_associated|c_f_pointer|c_f_procpointer|c_f_strpointer|c_funloc|c_loc|c_sizeof|ceiling|char|chdir|chmod|cmplx|co_broadcast|co_max|co_min|co_reduce|co_sum|command_argument_count|compiler_options|compiler_version|complex|conjg|cos|cosd|cosh|coshape|cospi|cotan|cotand|count|cpu_time|cshift|ctime)$")
+  (#match? @function "(?i)^(c_f_strpointer|ceiling|char|chdir|chmod|cmplx|co_broadcast|co_max|co_min|co_reduce|co_sum|command_argument_count|complex|conjg|cos|cosd|cosh|coshape|cospi|cotan|cotand|count|cpu_time|cshift|ctime)$")
 )
 
 (
@@ -505,7 +583,7 @@
     (subroutine_call
       subroutine: (identifier) @function)
   ]
-  (#match? @function "(?i)^(radix|ran|rand|random_init|random_number|random_seed|range|rank|real|rename|repeat|reshape|rrspacing|rshift)$")
+  (#match? @function "(?i)^(radix|ran|rand|random_init|random_number|random_seed|range|real|rename|repeat|reshape|rrspacing|rshift)$")
 )
 
 (
