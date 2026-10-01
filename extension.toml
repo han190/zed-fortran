@@ -3,8 +3,12 @@ name = "Fortran"
 version = "0.1.0"
 schema_version = 1
 authors = ["han190 <limpid.mazarine@gmail.com>"]
-description = "Fortran syntax highlighting for Zed"
+description = "Fortran language support for Zed"
 repository = "https://github.com/han190/zed-fortran"
+
+[language_servers.fortls]
+name = "fortls"
+languages = ["Fortran"]
 
 [grammars.fortran]
 repository = "https://github.com/stadelmanma/tree-sitter-fortran"

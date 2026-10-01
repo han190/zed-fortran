@@ -1,11 +1,15 @@
 # Fortran syntax highlighting for Zed
 
 A deliberately small, local-first Zed extension for Fortran syntax
-highlighting. It uses
+highlighting and language intelligence. It uses
 [`stadelmanma/tree-sitter-fortran`](https://github.com/stadelmanma/tree-sitter-fortran)
-directly and does not include a language server or any Rust extension code.
+directly and starts [`fortls`](https://fortls.fortran-lang.org/) when it is
+available on the workspace PATH.
 
 ## Install locally
+
+Install a Rust toolchain first; Zed uses Cargo to build the small extension
+module that launches `fortls`.
 
 1. Open Zed's Extensions view.
 2. Select **Install Dev Extension**.
@@ -34,11 +38,16 @@ This package contains only:
 
 - Zed extension metadata;
 - Fortran language and file-suffix metadata;
-- Tree-sitter highlight queries; and
+- Tree-sitter highlight and folding queries; and
+- a `fortls` language-server launcher; and
 - free- and fixed-form visual samples.
 
-It intentionally provides no language server, completion, diagnostics,
-formatting, indentation rules, or outline queries.
+`fortls` provides completion, navigation, hover information, and diagnostics.
+Install it separately (for example, `brew install fortls` or `pip install
+fortls`) and ensure it is on your PATH. It does not provide document
+formatting; indentation is syntax-based, uses two spaces, and leaves `PROGRAM`,
+`MODULE`, and `SUBMODULE` contents at their surrounding indentation. Folding
+covers Fortran scoping units and block constructs.
 
 ## Grammar revision
 
