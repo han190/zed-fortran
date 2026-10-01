@@ -151,8 +151,6 @@
   "intrinsic"
   "is"
   "label"
-  "local"
-  "local_init"
   "lock"
   "memory"
   "module"
@@ -202,6 +200,15 @@
   "while"
   "write"
 ] @keyword
+
+; These are contextual keywords used only in DO CONCURRENT localities.
+(concurrent_locality
+  [
+    "default"
+    "local"
+    "local_init"
+    "shared"
+  ] @keyword)
 
 (implicit_statement
   (none) @keyword)
