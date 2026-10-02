@@ -347,6 +347,23 @@
   (statement_label_reference)
 ] @label
 
+; Named construct labels, e.g. `outer: do` and `end do outer`. A DO CONCURRENT
+; is represented by the same do_loop node, so it is covered here as well.
+(block_label_start_expression
+  "label" @label)
+
+(block_label) @label
+
+; EXIT and CYCLE can name a surrounding DO construct. CONTINUE has no trailing
+; construct name; any numeric statement label before it is covered above.
+(keyword_statement
+  "exit"
+  (identifier) @label)
+
+(keyword_statement
+  "cycle"
+  (identifier) @label)
+
 (parameters
   (identifier) @variable.parameter)
 
