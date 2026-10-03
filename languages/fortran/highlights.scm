@@ -97,7 +97,6 @@
   "else"
   "elseif"
   "elsewhere"
-  "end"
   "endassociate"
   "endblock"
   "endblockdata"
@@ -200,6 +199,31 @@
   "while"
   "write"
 ] @keyword
+
+; `end` is a contextual keyword in Fortran: it is also valid as a keyword
+; argument name (for example, `read(unit, end=100)`). Highlight it only when
+; it begins an END statement.
+(end_associate_statement "end" @keyword)
+(end_block_construct_statement "end" @keyword)
+(end_block_data_statement "end" @keyword)
+(end_coarray_critical_statement "end" @keyword)
+(end_coarray_team_statement "end" @keyword)
+(end_do_label_loop_statement "end" @keyword)
+(end_do_loop_statement "end" @keyword)
+(end_enum_statement "end" @keyword)
+(end_enumeration_type_statement "end" @keyword)
+(end_forall_statement "end" @keyword)
+(end_function_statement "end" @keyword)
+(end_if_statement "end" @keyword)
+(end_interface_statement "end" @keyword)
+(end_module_procedure_statement "end" @keyword)
+(end_module_statement "end" @keyword)
+(end_program_statement "end" @keyword)
+(end_select_statement "end" @keyword)
+(end_submodule_statement "end" @keyword)
+(end_subroutine_statement "end" @keyword)
+(end_type_statement "end" @keyword)
+(end_where_statement "end" @keyword)
 
 ; These are contextual keywords used only in DO CONCURRENT localities.
 (concurrent_locality
@@ -374,12 +398,24 @@
 (program_statement
   (name) @title)
 
+(end_program_statement
+  (name) @title)
+
 (module_statement
+  (name) @type)
+
+(end_module_statement
   (name) @type)
 
 (submodule_statement
   (module_name) @type
   (name) @type)
+
+(end_submodule_statement
+  (name) @type)
+
+(end_block_data_statement
+  (name) @title)
 
 (function_statement
   (name) @function)
